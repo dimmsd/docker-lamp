@@ -16,11 +16,11 @@ Based on images:
 
 [Ubuntu base image](https://github.com/dimmsd/docker-ubuntu-base)
 
-[Ubuntu php-fpm image](https://github.com/dimmsd/docker-php-fpm)
+[Ubuntu php-fpm image](https://github.com/dimmsd/docker-ubuntu-php-fpm)
 
-[Ubuntu httpd image](https://github.com/dimmsd/docker-httpd)
+[Ubuntu httpd image](https://github.com/dimmsd/docker-ubuntu-httpd)
 
-[Ubuntu nginx image](https://github.com/dimmsd/docker-nginx)
+[Ubuntu nginx image](https://github.com/dimmsd/docker-ubuntu-nginx)
 
 ### Using the `Makefile`
 
