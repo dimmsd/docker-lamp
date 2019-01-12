@@ -1,0 +1,27 @@
+#!/bin/sh
+set -e
+
+# For use sudo docker start | stop without remove contaner
+# Else need use ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+# Or sudo docker-compose down for recreate container
+
+if [ ! -z "$TIMEZONE" ]
+then
+    # set system timezone
+    rm /etc/localtime
+    ln -s /usr/share/zoneinfo/$TIMEZONE /etc/localtime
+fi
+
+if [ $CLEAR_APACHE_LOG -eq 1 ]
+then
+rm -rf /var/log/apache2/*
+fi
+
+rm -rf /var/run/apache2/apache2.pid
+
+cd /etc/apache2/sites-available
+a2ensite *
+
+apachectl -t > /var/log/apache2/init.log 2>&1
+
+exec /usr/sbin/apache2ctl -D FOREGROUND

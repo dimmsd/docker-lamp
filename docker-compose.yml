@@ -1,0 +1,128 @@
+version: '2.2'
+services:
+
+  after-init:
+    image: dimmsd/ubuntu-base:16.04
+    container_name: after-init-${MAIN_DOMAIN}
+    command: /tmp/utils/after-init-php-fpm.sh
+    environment:
+      - PHP_FPM_LOG_PERMISSION=${PHP_FPM_LOG_PERMISSION}
+    depends_on:
+      - php-fpm
+      - nginx
+      - httpd
+      - db
+    volumes:
+      - ./utils:/tmp/utils
+      - ./log-fpm:/tmp/log-fpm
+    networks:
+      test_demo:
+
+  before-init:
+    image: dimmsd/ubuntu-base:16.04
+    container_name: before-init-${MAIN_DOMAIN}
+    command: /tmp/utils/before-init.sh
+    environment:
+      - LOG_CLEAR_BEFORE_UP=${LOG_CLEAR_BEFORE_UP}
+      - CLEAR_APACHE_LOG=${CLEAR_APACHE_LOG}
+    volumes:
+      - ./utils:/tmp/utils
+      - ./log-fpm:/tmp/log-fpm
+      - ./log-apache:/tmp/log-apache
+      - ./log-nginx:/tmp/log-nginx
+      - ./log-xdebug:/tmp/log-xdebug
+    networks:
+      test_demo:
+
+
+  nginx:
+    image: dimmsd/ubuntu-nginx:${UBUNTU_VERSION}.${NGINX_VERSION}
+    container_name: nginx-${MAIN_DOMAIN}
+    depends_on:
+      - httpd
+    links:
+      - httpd
+    environment:
+      - MAIN_DOMAIN=${MAIN_DOMAIN}
+      - MAIN_PATH=${MAIN_PATH}
+      - TIMEZONE=${TIMEZONE}
+    volumes:
+      - ./www:/var/www
+      - ./log-nginx:/var/log/nginx
+      - ./utils:/tmp/utils
+    networks:
+      test_demo:
+        ipv4_address: ${NGINXIP}
+
+  httpd:
+    image: dimmsd/ubuntu-httpd:${UBUNTU_VERSION}
+    container_name: httpd-${MAIN_DOMAIN}
+    depends_on:
+      - php-fpm
+    links:
+      - php-fpm
+    environment:
+      - MAIN_DOMAIN=${MAIN_DOMAIN}
+      - MAIN_PATH=${MAIN_PATH}
+      - TIMEZONE=${TIMEZONE}
+      - CLEAR_APACHE_LOG=${CLEAR_APACHE_LOG}
+    volumes:
+      - ./www:/var/www
+      - ./log-apache:/var/log/apache2
+      - ./utils:/tmp/utils
+    networks:
+      test_demo:
+        ipv4_address: ${HTTPDIP}
+
+  php-fpm:
+    image: dimmsd/ubuntu-php-fpm:${UBUNTU_VERSION}.${PHP_VERSION}
+    container_name: php-fpm-${MAIN_DOMAIN}
+    depends_on:
+      - db
+    links:
+      - db
+    environment:
+      - PHP_VERSION=${PHP_VERSION}
+      - TIMEZONE=${TIMEZONE}
+      - OWN_USER=${OWN_USER}
+      - OWN_GID=${OWN_GID}
+      - OWN_UID=${OWN_UID}
+    volumes:
+      - ./www:/var/www
+      - ./log-xdebug:/tmp/xdebug
+      - ./log-fpm:/tmp/log-fpm
+      - ./utils:/tmp/utils
+    networks:
+      test_demo:
+        ipv4_address: ${FPMIP}
+
+  db:
+    image: mysql:5.7
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    container_name: db-${MAIN_DOMAIN}
+    depends_on:
+      - before-init
+    environment:
+      MYSQL_ROOT_HOST: ${MYSQL_ROOT_HOST}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    restart: always
+    volumes:
+      - ./db-init:/docker-entrypoint-initdb.d
+      - ./db:/var/lib/mysql
+      - ./utils:/tmp/utils
+    networks:
+      test_demo:
+        ipv4_address: ${MYSQLIP}
+
+
+networks:
+  test_demo:
+    driver: bridge
+    name: ${MAIN_DOMAIN}
+    ipam:
+      config:
+      -
+        subnet: ${SUBNET}

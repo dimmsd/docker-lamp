@@ -1,0 +1,21 @@
+#!/bin/sh
+set -e
+
+
+if [ ! -z "$TIMEZONE" ]
+then
+    # set system timezone
+    rm /etc/localtime
+    ln -s /usr/share/zoneinfo/$TIMEZONE /etc/localtime
+fi
+
+
+for filename in $(ls /etc/nginx/templates)
+do
+  # Can't use env variable in nginx config - use envsubst (package gettext) if need...
+  cat /etc/nginx/templates/$(basename $filename) | envsubst '$${MAIN_DOMAIN},$${MAIN_PATH}' > /etc/nginx/sites-available/$(basename $filename)
+  cat /etc/nginx/sites-available/$(basename $filename)  >> /var/log/nginx/init.log 2>&1
+  nginx_ensite $(basename $filename)  >> /var/log/nginx/init.log 2>&1
+done;
+
+exec /usr/sbin/nginx -g 'daemon off;'
