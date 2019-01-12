@@ -46,6 +46,8 @@ services:
       - MAIN_DOMAIN=${MAIN_DOMAIN}
       - MAIN_PATH=${MAIN_PATH}
       - TIMEZONE=${TIMEZONE}
+    extra_hosts:
+      - "${MAIN_DOMAIN}:127.0.0.1"
     volumes:
       - ./www:/var/www
       - ./log-nginx:/var/log/nginx

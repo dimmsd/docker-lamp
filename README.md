@@ -40,6 +40,7 @@ del-logs			Delete all logs from ./log* folder
 show-mysql-log			Show log MYSQL container
 backup-mysql			Backup MYSQL database
 check-version			Check version docker images (up services before!)
+check-site			Execute for test curl $(MAIN_DOMAIN) (from container)
 fpm-status			Show PHP-FPM status page
 fpm-exec-index			Execute /var/www/main/index.php over PHP-FPM
 install-laravel			Install Laravel

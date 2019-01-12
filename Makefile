@@ -37,6 +37,7 @@ help:
 	@echo "\tshow-mysql-log - Show log MYSQL container"
 	@echo "\tbackup-mysql - Backup MYSQL database"
 	@echo "\tcheck-version - Check version images"
+	@echo "\tcheck-site - Execute for test curl $(MAIN_DOMAIN) (from container)"
 	@echo "Addons:"
 	@echo "\tinstall-laravel - Install Laravel"
 config-test:
@@ -72,6 +73,8 @@ check-version:
 	@./utils/check-version.sh docker-ubuntu-php-fpm php-fpm-$(MAIN_DOMAIN) dimmsd/ubuntu-php-fpm:${UBUNTU_VERSION}.${PHP_VERSION}
 	@./utils/check-version.sh docker-ubuntu-nginx nginx-$(MAIN_DOMAIN) dimmsd/ubuntu-nginx:${UBUNTU_VERSION}.${NGINX_VERSION}
 	@./utils/check-version.sh docker-ubuntu-httpd httpd-$(MAIN_DOMAIN) dimmsd/ubuntu-httpd:${UBUNTU_VERSION}
+check-site:
+	@docker exec -it nginx-$(MAIN_DOMAIN) /tmp/utils/test7.sh
 del-database:
 	@echo "Delete database"
 	@docker run --rm \
