@@ -15,8 +15,11 @@ Contains php-fpm, php-cli, xdebug, composer.
 Based on images:
 
 [Ubuntu base image](https://github.com/dimmsd/docker-ubuntu-base)
+
 [Ubuntu php-fpm image](https://github.com/dimmsd/docker-php-fpm)
+
 [Ubuntu httpd image](https://github.com/dimmsd/docker-httpd)
+
 [Ubuntu nginx image](https://github.com/dimmsd/docker-nginx)
 
 ### Using the `Makefile`
