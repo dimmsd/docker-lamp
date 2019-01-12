@@ -52,8 +52,8 @@ $ git clone git://github.com/dimmsd/docker-lamp.git
 $ cd docker-lamp
 $ cp .env.example .env
 $ make up
-## add example.loc in your /etc/hosts, see Environment section
-## go example.loc in your browser
+## Add example.loc in your /etc/hosts, see Environment section
+## Go example.loc in your browser
 ```
 
 ### Example Laravel
@@ -63,17 +63,17 @@ $ git clone git://github.com/dimmsd/docker-lamp.git
 $ cd docker-lamp
 $ cp .env.example .env
 ## Open .env file
-## Uncomment line with Laravel version, example
+## Uncomment line with Laravel version, example:
 ## LARAVEL_VERSION=5.5
-## Set variable MAIN_PATH as
+## Set variable MAIN_PATH as:
 ## MAIN_PATH=/var/www/main/public
 ## Save .env file and exit
 $ make up
 $ make install-laravel
-## add example.loc in your /etc/hosts, see Environment
-## go example.loc in your browser
-## for execute artisan command attach PHP-FPM container
-make exec-as-user
+## Add example.loc in your /etc/hosts, see Environment
+## Go example.loc in your browser
+## For execute artisan command attach PHP-FPM container
+$ make exec-as-user
 user@e414a9a4b1ad:/var/www/main$ php artisan
 ```
 
